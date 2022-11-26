@@ -1,1 +1,12 @@
-#testing
+Instruction on game 2048:
+
+The Project.py file contains the objects and functions needed to operate the game.
+User need to install following packages before beginning the game:
+sys
+copy
+time
+random
+pygame
+
+
+The Game_Main.py file allow users to begin the game.

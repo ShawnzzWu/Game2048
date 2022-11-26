@@ -1,10 +1,7 @@
 import Project as pj
-import pygame as pg
 
 def main():
-    # Initializing
-    pg.init()
-
+    #Initializing the screen
     pj.initial_screen()
 
     # Initial the game
