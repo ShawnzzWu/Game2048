@@ -46,7 +46,9 @@ class game_2048():
 
         #Indicate whether the game is ended
         self.end = False
+        self.reached = False
         self.won = False
+
 
         #Counting scores
         # self.score = 0
@@ -115,41 +117,6 @@ class game_2048():
             temp.sort(key = lambda x: 1 if x == 0 else 0)
 
             temp = self.sum_forward(temp)
-            # #Add the first two numbers if they are the same
-            # if temp[0] == temp[1]:
-            #     temp[0] = temp[0] + temp[1]
-            #
-            #     #Add the last two numbers if they are the same and leave the two sums in the first two slots
-            #     if temp[2] == temp[3]:
-            #         temp[1] = temp[2] + temp[3]
-            #         temp[2] = 0
-            #         temp[3] = 0
-            #
-            #     #Else keep the relative location
-            #     else:
-            #         temp[1], temp[2] = temp[2], temp[3]
-            #         temp[3] = 0
-            #
-            #     if (temp[0] == 2048 or temp[1] == 2048) and not self.won:
-            #         self.win()
-            # else:
-            #     #If the first two numbers are not the same, check the second and the third number
-            #     if temp[1] == temp[2]:
-            #         temp[1] = temp[1] + temp[2]
-            #         temp[2] = temp[3]
-            #         temp[3] = 0
-            #
-            #         if temp[1] == 2048 and not self.won:
-            #             self.win()
-            #
-            #     #If they are not the same, check the last two numbers, leaving the remaining slots as zeros
-            #     else:
-            #         if temp[2] == temp[3]:
-            #             temp[2] = temp[2] + temp[3]
-            #             temp[3] = 0
-            #
-            #             if temp[2] == 2048 and not self.won:
-            #                 self.win()
 
         #If the original numbers are different to the result, generate a new number and store the last version into the history
         if flag != self.skeleton:
@@ -166,32 +133,7 @@ class game_2048():
         flag = copy.deepcopy(self.skeleton)
         for temp in self.skeleton:
             temp.sort(key = lambda x: 0 if x == 0 else 1)
-            # if temp[3] == temp[2]:
-            #     temp[3] = temp[3] + temp[2]
-            #
-            #     if temp[1] == temp[0]:
-            #         temp[2] = temp[1] + temp[0]
-            #         temp[1] = 0
-            #         temp[0] = 0
-            #     else:
-            #         temp[2], temp[1] = temp[1], temp[0]
-            #         temp[0] = 0
-            #
-            #     if (temp[0] == 2048 or temp[1] == 2048) and not self.won:
-            #         self.win()
-            # else:
-            #     if temp[2] == temp[1]:
-            #         temp[2] = temp[2] + temp[1]
-            #         temp[1] = temp[0]
-            #         temp[0] = 0
-            #
-            #         if temp[1] == 2048 and not self.won:
-            #             self.win()
-            #
-            #     else:
-            #         if temp[1] == temp[0]:
-            #             temp[1] = temp[1] + temp[0]
-            #             temp[0] = 0
+
             temp = self.sum_backword(temp)
 
         if flag != self.skeleton:
@@ -207,30 +149,7 @@ class game_2048():
         for i in range(0,4):
             temp = [x[i] for x in self.skeleton]
             temp.sort(key = lambda x: 1 if x == 0 else 0)
-            # if temp[0] == temp[1]:
-            #     temp[0] = temp[0] + temp[1]
-            #
-            #     if temp[2] == temp[3]:
-            #         temp[1] = temp[2] + temp[3]
-            #         temp[2] = 0
-            #         temp[3] = 0
-            #     else:
-            #         temp[1], temp[2] = temp[2], temp[3]
-            #         temp[3] = 0
-            #
-            #     if (temp[0] == 2048 or temp[1] == 2048) and not self.won:
-            #         self.win()
-            #
-            # else:
-            #     if temp[1] == temp[2]:
-            #         temp[1] = temp[1] + temp[2]
-            #         temp[2] = temp[3]
-            #         temp[3] = 0
-            #
-            #     else:
-            #         if temp[2] == temp[3]:
-            #             temp[2] = temp[2] + temp[3]
-            #             temp[3] = 0
+
             temp = self.sum_forward(temp)
 
             for j in range(0,4):
@@ -250,29 +169,6 @@ class game_2048():
             temp.sort(key=lambda x: 0 if x == 0 else 1)
 
             temp = self.sum_backword(temp)
-            # if temp[3] == temp[2]:
-            #     temp[3] = temp[3] + temp[2]
-            #
-            #     if temp[1] == temp[0]:
-            #         temp[2] = temp[1] + temp[0]
-            #         temp[1] = 0
-            #         temp[0] = 0
-            #     else:
-            #         temp[2], temp[1] = temp[1], temp[0]
-            #         temp[0] = 0
-            #
-            #     if (temp[0] == 2048 or temp[1] == 2048) and not self.won:
-            #         self.win()
-            #
-            # else:
-            #     if temp[2] == temp[1]:
-            #         temp[2] = temp[2] + temp[1]
-            #         temp[1] = temp[0]
-            #         temp[0] = 0
-            #     else:
-            #         if temp[1] == temp[0]:
-            #             temp[1] = temp[1] + temp[0]
-            #             temp[0] = 0
 
             for j in range(0, 4):
                 self.skeleton[j][i] = temp[j]
@@ -300,7 +196,7 @@ class game_2048():
                 temp[3] = 0
 
             if (temp[0] == 2048 or temp[1] == 2048) and not self.won:
-                self.win()
+                self.reached = True
         else:
             # If the first two numbers are not the same, check the second and the third number
             if temp[1] == temp[2]:
@@ -309,7 +205,7 @@ class game_2048():
                 temp[3] = 0
 
                 if temp[1] == 2048 and not self.won:
-                    self.win()
+                    self.reached = True
 
             # If they are not the same, check the last two numbers, leaving the remaining slots as zeros
             else:
@@ -318,7 +214,7 @@ class game_2048():
                     temp[3] = 0
 
                     if temp[2] == 2048 and not self.won:
-                        self.win()
+                        self.reached = True
         return temp
 
     def sum_backword(self, temp):
@@ -334,7 +230,7 @@ class game_2048():
                 temp[0] = 0
 
             if (temp[3] == 2048 or temp[2] == 2048) and not self.won:
-                self.win()
+                self.reached = True
         else:
             if temp[2] == temp[1]:
                 temp[2] = temp[2] + temp[1]
@@ -342,7 +238,7 @@ class game_2048():
                 temp[0] = 0
 
                 if temp[2] == 2048 and not self.won:
-                    self.win()
+                    self.reached = True
 
             else:
                 if temp[1] == temp[0]:
@@ -350,7 +246,7 @@ class game_2048():
                     temp[0] = 0
 
                     if temp[1] == 2048 and not self.won:
-                        self.win()
+                        self.reached = True
         return temp
 
 
@@ -395,6 +291,7 @@ class game_2048():
 
     def win(self):
         self.won = True
+        self.reached = True
 
         note = pg.font.SysFont(None, 56)
         note1 = note.render("You've reached 2048!!", True, color_black)
@@ -540,3 +437,42 @@ def game_start(game):
                                     pg.display.flip()
 
                         mouse = pg.mouse.get_pos()
+
+                if game.reached:
+                    time.sleep(1)
+                    while game.reached:
+                        game.win()
+                        for event in pg.event.get():
+                            # If quit is entered, exit the game
+                            if event.type == pg.QUIT:
+                                sys.exit()
+                            elif event.type == pg.MOUSEBUTTONUP:
+                                if 325 <= mouse[0] <= 475 and 350 <= mouse[1] <= 400:
+                                    initial_screen()
+                                    game = game_2048()
+                                    pg.display.flip()
+
+                                if 325 <= mouse[0] <= 475 and 250 <= mouse[1] <= 300:
+                                    game.reached = False
+                                    initial_screen()
+                                    # Rerender the new result and the background color
+                                    for i in range(0, 4):
+                                        for j in range(0, 4):
+
+                                            # Only print the number if it's not 0
+                                            if game.skeleton[i][j] != 0:
+                                                temp = number_txt[game.skeleton[i][j]]
+
+                                                # Set the location of the number accordingly
+                                                temp_locat = temp.get_rect()
+                                                temp_locat.x += (j + 2) * 100
+                                                temp_locat.y += (i + 1) * 100 + 25
+                                                display.blit(temp, temp_locat)
+
+                                            # Refresh the screen to display
+                                            pg.display.flip()
+
+
+                        mouse = pg.mouse.get_pos()
+
+game_start(game)
