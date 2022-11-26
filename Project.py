@@ -60,11 +60,13 @@ class game_2048():
         # Use a list to store which slots are empty
         empty = []
 
+        #Find empty slots
         for i in range(0, 4):
             for j in range(0, 4):
                 if self.skeleton[i][j] == 0:
                     empty.append(i * 4 + j)
 
+        #If there's only one empty slot
         if len(empty) == 1:
             a = empty[0]
 
@@ -73,6 +75,7 @@ class game_2048():
 
             self.skeleton[i][j] = 2
 
+            #Check if there are two adjoining slots having the same number
             count = 0
             for i in range(4):
                 for j in range(4):
@@ -83,10 +86,11 @@ class game_2048():
                         if self.skeleton[i][j] != self.skeleton[i + 1][j]:
                             count += 1
 
+            #If no two adjoining slots having the same number, mark the game as end
             if count == 24:
                 self.end = True
 
-
+        #Else
         # Randomly choose an empty slot as 2
         a = rd.choice(empty)
 
@@ -115,6 +119,7 @@ class game_2048():
 
             #leave all the zeros to the right
             temp.sort(key = lambda x: 1 if x == 0 else 0)
+
 
             temp = self.sum_forward(temp)
 
@@ -179,6 +184,7 @@ class game_2048():
                 self.history = self.history[1:]
             self.history.append(flag)
 
+    # Compress the numbers in the temp to the very left
     def sum_forward(self, temp):
         # Add the first two numbers if they are the same
         if temp[0] == temp[1]:
@@ -217,6 +223,7 @@ class game_2048():
                         self.reached = True
         return temp
 
+    # Compress the numbers in the temp to the very right
     def sum_backword(self, temp):
         if temp[3] == temp[2]:
             temp[3] = temp[3] + temp[2]
@@ -250,19 +257,22 @@ class game_2048():
         return temp
 
 
-    #If any history is stored, return to the last version
+    #If any history is stored, use the function to return the last action
     def undo(self):
         if len(self.history) > 0:
             self.skeleton = self.history.pop()
 
 
+    #Define a function indicating Gameover
     def end_game(self):
 
+        #Genereate three texts
         note = pg.font.SysFont(None, 56)
         note1 = note.render("There's no empty slot!!", True, color_black)
         note2 = note.render("Game Over", True, color_black)
         restart = note.render("Restart", True, color_black)
 
+        #For each text, generate its location
         note1_locat = note1.get_rect()
         note1_locat.x += 200
         note1_locat.y += 150
@@ -275,29 +285,36 @@ class game_2048():
         restart_locat.x += 325
         restart_locat.y += 350
 
+        #Painting backgroung and capture mouse movement
         display.fill(color_maize)
         mouse = pg.mouse.get_pos()
 
+        #Draw a button
+        #If the mouse is on the button, paint the button in a darker color
         if 325 <= mouse[0] <= 475 and 350 <= mouse[1] <= 400:
             pg.draw.rect(display, color_dkorange, [325, 350, 150, 50])
         else:
             pg.draw.rect(display, color_dorange, [325, 350, 150, 50])
 
+        #Display texts
         display.blit(note1, note1_locat)
         display.blit(note2, note2_locat)
         display.blit(restart, restart_locat)
         pg.display.flip()
 
 
+    #Define a function
     def win(self):
         self.won = True
         self.reached = True
 
+        #Genereate three texts
         note = pg.font.SysFont(None, 56)
         note1 = note.render("You've reached 2048!!", True, color_black)
         conti = note.render("Continue", True, color_black)
         restart = note.render("Restart", True, color_black)
 
+        #For each text, generate its location
         note1_locat = note1.get_rect()
         note1_locat.x += 200
         note1_locat.y += 150
@@ -310,9 +327,12 @@ class game_2048():
         restart_locat.x += 325
         restart_locat.y += 350
 
+        #Painting backgroung and capture mouse movement
         display.fill(color_maize)
         mouse = pg.mouse.get_pos()
 
+        # Draw a button
+        # If the mouse is on the button, paint the button in a darker color
         if 325 <= mouse[0] <= 475 and 250 <= mouse[1] <= 300:
             pg.draw.rect(display, color_dkorange, [325, 250, 150, 50])
         else:
@@ -323,6 +343,7 @@ class game_2048():
         else:
             pg.draw.rect(display, color_dorange, [325, 350, 150, 50])
 
+        #Display texts
         display.blit(note1, note1_locat)
         display.blit(conti, conti_locat)
         display.blit(restart, restart_locat)
@@ -338,8 +359,10 @@ instruct_rend.append(instruct.render('How to play', True, color_black))
 instruct_rend.append(instruct.render('Move: up/W, down/S, left/A, right/D', True, color_black))
 instruct_rend.append(instruct.render('Undo: Backspace', True, color_black))
 
+#Define a function to initial the screen
 def initial_screen():
-    # Paint the screen
+
+    # Paint the background
     display.fill(color_maize)
 
     #Print texts at the top of the screen
@@ -349,22 +372,25 @@ def initial_screen():
         display.blit(instruct_rend[i], instruct_locat)
 
 
-    #Paint the background color for numbers
+    #Paint the background color for slots
     for i in range(0, 4):
         for j in range(0, 4):
             temp_x = (j + 2) * 100
             temp_y = (i + 1) * 100
             pg.draw.rect(display, color_dorange, (temp_x, temp_y, 80, 80), 0)
 
+
+#Initializing the screen
 initial_screen()
 
 #Initial the game
 game = game_2048()
 
-
 #Refresh the screen
 pg.display.flip()
 
+
+#Define a function to start the game
 def game_start(game):
     #Use the while loop to run the game until user want to exit
     while True:
@@ -422,15 +448,24 @@ def game_start(game):
                         #Refresh the screen to display
                         pg.display.flip()
 
+                #If the game reaches an end, print the end page
                 if game.end:
                     time.sleep(2.5)
+
+                    #keep the end page until capturing an input
                     while game.end:
+
+                        #Generate end page
                         game.end_game()
+
+                        #Capture input
                         for event in pg.event.get():
                             # If quit is entered, exit the game
                             if event.type == pg.QUIT:
                                 sys.exit()
                             elif event.type == pg.MOUSEBUTTONUP:
+
+                                #If the restart button is pressed, reinitial the game
                                 if 325 <= mouse[0] <= 475 and 350 <= mouse[1] <= 400:
                                     initial_screen()
                                     game = game_2048()
@@ -438,24 +473,34 @@ def game_start(game):
 
                         mouse = pg.mouse.get_pos()
 
+                #If the game reaches the first 2048, print the congrats page
                 if game.reached:
                     time.sleep(1)
+
+                    #keep the congrats page until capturing an input
                     while game.reached:
+
+                        #Generate the wining page
                         game.win()
+
                         for event in pg.event.get():
                             # If quit is entered, exit the game
                             if event.type == pg.QUIT:
                                 sys.exit()
+
+                            # If the restart button is pressed, reinitial the game
                             elif event.type == pg.MOUSEBUTTONUP:
                                 if 325 <= mouse[0] <= 475 and 350 <= mouse[1] <= 400:
                                     initial_screen()
                                     game = game_2048()
                                     pg.display.flip()
 
+                                #If the continue button is pressed, continue the game
                                 if 325 <= mouse[0] <= 475 and 250 <= mouse[1] <= 300:
                                     game.reached = False
                                     initial_screen()
-                                    # Rerender the new result and the background color
+
+                                    # Rerender the result and the background color
                                     for i in range(0, 4):
                                         for j in range(0, 4):
 
